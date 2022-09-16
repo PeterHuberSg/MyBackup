@@ -8,9 +8,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{387D86FF-AEEC-488A-BF0A-38F61179F00C}"
 	ProjectSection(SolutionItems) = preProject
 		Backup.jpg = Backup.jpg
+		Directories.jpg = Directories.jpg
 		MyBackup.pptx = MyBackup.pptx
 		Purge.jpg = Purge.jpg
 		README.md = README.md
+		Screenshot.jpg = Screenshot.jpg
 	EndProjectSection
 EndProject
 Global
