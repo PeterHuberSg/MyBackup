@@ -1,4 +1,23 @@
-﻿using System;
+﻿/**************************************************************************************
+
+MyBackup.MainWindow
+===================
+
+User Interface to control backup operation
+
+Written in 2022 by Jürgpeter Huber, Singapore 
+Contact: https://github.com/PeterHuberSg/MyBackup
+
+To the extent possible under law, the author(s) have dedicated all copyright and 
+related and neighboring rights to this software to the public domain worldwide under
+the Creative Commons 0 license (details see LICENSE.txt file, see also
+<http://creativecommons.org/publicdomain/zero/1.0/>). 
+
+This software is distributed without any warranty. 
+**************************************************************************************/
+
+
+using System;
 using System.Linq;
 using System.IO;
 using System.Text;
@@ -8,6 +27,7 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Collections.Generic;
 
+
 namespace MyBackup {
 
 
@@ -16,6 +36,8 @@ namespace MyBackup {
   /// </summary>
   public partial class MainWindow: Window {
 
+    #region Constructor
+    //      -----------
 
     readonly FileInfo setupDataFile;
     const string setupDataDelimiter = "<-=#=->";
@@ -30,73 +52,25 @@ namespace MyBackup {
       setupDataFile = new FileInfo(Path.Combine(setupDataDir.FullName, "MyBackupSetup.txt"));
       SetupPathTextBox.Text = setupDataFile.FullName;
 
-      //SourceDirectoriesCopyTextBox.Text =
-      //  @"C:\Users\Peter\OneDrive\OneDriveData" + Environment.NewLine +
-      //  @"C:\Users\Peter\source\repos";
-
-      //SourceDirectoriesUpdateTextBox.Text =
-      //  @"E:\Movies" + Environment.NewLine +
-      //  @"E:\Musig" + Environment.NewLine +
-      //  @"E:\Pix" + Environment.NewLine +
-      //  @"E:\Vids";
-
-      //BackupPathTextBox.Text = @"F:";
-      //BackupPathTextBox.Text = @"D:\Backups";
-
       readSetupDataFile();
       updateBackupDriveStats();
 
+      HelpButton.Click += HelpButton_Click;
       BackupPathTextBox.LostFocus += BackupPathTextBox_LostFocus;
       ExecuteButton.Click += ExecuteButton_Click;
       PurgeButton.Click += PurgeButton_Click;
       Closing += MainWindow_Closing;
       //Closed += MainWindow_Closed;
     }
+    #endregion
 
 
-    private void PurgeButton_Click(object sender, RoutedEventArgs e) {
-      var backupDirectory = new DirectoryInfo(BackupPathTextBox.Text);
-      var backupFiles = new List<(DateTime Date, DirectoryInfo Dir)>();
-      foreach (var directory in backupDirectory.GetDirectories()) {
-        if (directory.Name.Length==10 && directory.Name[4]=='_' && directory.Name[7]=='_') {
-          backupFiles.Add((new DateTime(int.Parse(directory.Name[..4]), int.Parse(directory.Name[5..7]), int.Parse(directory.Name[8..])), directory));
-        }
-      }
-      backupFiles = backupFiles.OrderBy(bf => bf.Date).ToList();
-      var deleteFiles = new List<(DateTime Date, DirectoryInfo Dir)>();
-      var sb = new StringBuilder();
-      var dirCount = 0;
-      foreach (var backupFile in backupFiles) {
-        if (dirCount%2 == 1) {
-          deleteFiles.Add(backupFile);
-          sb.AppendLine(backupFile.Dir.FullName);
-        }
-        dirCount++;
-      }
-      if (deleteFiles.Count==0) {
-        MessageBox.Show($"No directory found in {BackupPathTextBox.Text} that can be purged." + Environment.NewLine +
-          "Every second backup directory can only get deleted if their name looks like 9999_99_99.", "Nothing to purge", 
-          MessageBoxButton.OK, MessageBoxImage.Exclamation);
-        return;
-      }
-      var response = MessageBox.Show($"Do you want to delete every second directory in {BackupPathTextBox.Text} ?" + Environment.NewLine +
-        sb.ToString(), 
-        "Purge Backup Directories", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-      if (response==MessageBoxResult.Yes) {
-        BackupLogViewer.WriteLine("Purge: delete some of the backup directories");
-        foreach ((DateTime Date, DirectoryInfo Dir) in deleteFiles) {
-          try {
-            Dir.Delete(recursive: true);
-            BackupLogViewer.WriteLine($"deleted {Dir.FullName}.");
+    #region Event Handlers
+    //      --------------
 
-          } catch (Exception ex) {
-            logException("Exception occured. Cannot delete old backup directory" + Dir.FullName +
-              ". Try to delete it manually.", ex);
-          }
-        }
-        BackupLogViewer.WriteLine("Purge completed.");
-        BackupLogViewer.WriteLine();
-      }
+    private void HelpButton_Click(object sender, RoutedEventArgs e) {
+      var helpWindow = new HelpWindow{Owner=this};
+      helpWindow.ShowDialog();
     }
 
 
@@ -132,11 +106,6 @@ namespace MyBackup {
         var freePercent = 100 * backupDriveInfo.AvailableFreeSpace / backupDriveInfo.TotalSize;
         DriveStatsTextBlock.Text = $"{backupDriveInfo.Name} free {free} {freePercent}%";
       }
-    }
-
-
-    void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
-      isStopBackupThread = true;
     }
 
 
@@ -211,6 +180,61 @@ namespace MyBackup {
     }
 
 
+    private void PurgeButton_Click(object sender, RoutedEventArgs e) {
+      var backupDirectory = new DirectoryInfo(BackupPathTextBox.Text);
+      var backupFiles = new List<(DateTime Date, DirectoryInfo Dir)>();
+      foreach (var directory in backupDirectory.GetDirectories()) {
+        if (directory.Name.Length==10 && directory.Name[4]=='_' && directory.Name[7]=='_') {
+          backupFiles.Add((new DateTime(int.Parse(directory.Name[..4]), int.Parse(directory.Name[5..7]), int.Parse(directory.Name[8..])), directory));
+        }
+      }
+      backupFiles = backupFiles.OrderBy(bf => bf.Date).ToList();
+      var deleteFiles = new List<(DateTime Date, DirectoryInfo Dir)>();
+      var sb = new StringBuilder();
+      var dirCount = 0;
+      foreach (var backupFile in backupFiles) {
+        if (dirCount%2 == 1) {
+          deleteFiles.Add(backupFile);
+          sb.AppendLine(backupFile.Dir.FullName);
+        }
+        dirCount++;
+      }
+      if (deleteFiles.Count==0) {
+        MessageBox.Show($"No directory found in {BackupPathTextBox.Text} that can be purged." + Environment.NewLine +
+          "Every second backup directory can only get deleted if their name looks like 9999_99_99.", "Nothing to purge", 
+          MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        return;
+      }
+      var response = MessageBox.Show($"Do you want to delete every second directory in {BackupPathTextBox.Text} ?" + Environment.NewLine +
+        sb.ToString(), 
+        "Purge Backup Directories", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+      if (response==MessageBoxResult.Yes) {
+        BackupLogViewer.WriteLine("Purge: delete some of the backup directories");
+        foreach ((DateTime Date, DirectoryInfo Dir) in deleteFiles) {
+          try {
+            Dir.Delete(recursive: true);
+            BackupLogViewer.WriteLine($"deleted {Dir.FullName}.");
+
+          } catch (Exception ex) {
+            logException("Exception occured. Cannot delete old backup directory" + Dir.FullName +
+              ". Try to delete it manually.", ex);
+          }
+        }
+        BackupLogViewer.WriteLine("Purge completed.");
+        BackupLogViewer.WriteLine();
+      }
+    }
+
+
+    void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e) {
+      isStopBackupThread = true;
+    }
+    #endregion
+
+
+    #region Methods
+    //      -------
+
     private void writeSetupDataFile() {
       if (setupDataFile.Exists) setupDataFile.Delete();
       
@@ -236,18 +260,17 @@ namespace MyBackup {
     }
 
 
-    private void update(TextBox textBox, string text) {
+    private static void update(TextBox textBox, string text) {
       var startIndex = text.StartsWith(Environment.NewLine) ? Environment.NewLine.Length : 0;
       var endIndex = text.EndsWith(Environment.NewLine) ? text.Length - Environment.NewLine.Length : text.Length;
-      if (endIndex<=startIndex) {
-        textBox.Text = "";
-      } else { 
-        textBox.Text = text[startIndex..endIndex];
-      }
+      textBox.Text =endIndex<=startIndex ? "" : text[startIndex..endIndex];
     }
 
 
-    private DirectoryInfo[]? ensureSourceDirectoriesExist(StringBuilder errorStringBuilder, TextBox sourceDirectoriesTextBox) {
+    private static DirectoryInfo[]? ensureSourceDirectoriesExist(
+      StringBuilder errorStringBuilder, 
+      TextBox sourceDirectoriesTextBox) 
+    {
       if (string.IsNullOrEmpty(sourceDirectoriesTextBox.Text)) return null;
 
       var sourceDirectoriesTextBoxText = sourceDirectoriesTextBox.Text;
@@ -265,6 +288,38 @@ namespace MyBackup {
       return directoryInfos;
     }
 
+
+    private static DirectoryInfo createDirectoryInfo(string directoryName) {
+      if (!directoryName.EndsWith("\\")) {
+        directoryName += '\\';
+      }
+      return new DirectoryInfo(directoryName);
+    }
+
+
+    private bool makeSureDirectoryExists(DirectoryInfo backupDirectory) {
+      try {
+        if (!backupDirectory.Exists) {
+          backupDirectory.Create();
+        }
+        return true;
+      } catch (Exception ex) {
+        logException("Exception occured. Cannot create directory " + backupDirectory.FullName, ex);
+        return false;
+      }
+    }
+
+
+    private void logException(string message, Exception ex) {
+      BackupLogViewer.WriteLine();
+      BackupLogViewer.WriteLine(message, StringStyleEnum.errorHeader);
+      BackupLogViewer.WriteLine(ex.Message, StringStyleEnum.errorText);
+    }
+    #endregion
+
+
+    #region Backup Operations
+    //      -----------------
 
     private void doBackupThread() {
       var totalBackupStats = new BackupStats();
@@ -378,37 +433,6 @@ namespace MyBackup {
       updateBackupDriveStats();
     }
 
-
-    private static DirectoryInfo createDirectoryInfo(string directoryName) {
-      if (!directoryName.EndsWith("\\")) {
-        directoryName += '\\';
-      }
-      return new DirectoryInfo(directoryName);
-    }
-
-
-    private bool makeSureDirectoryExists(DirectoryInfo backupDirectory) {
-      try {
-        if (!backupDirectory.Exists) {
-          backupDirectory.Create();
-        }
-        return true;
-      } catch (Exception ex) {
-        logException("Exception occured. Cannot create directory " + backupDirectory.FullName, ex);
-        return false;
-      }
-    }
-
-
-    private void logException(string message, Exception ex) {
-      BackupLogViewer.WriteLine();
-      BackupLogViewer.WriteLine(message, StringStyleEnum.errorHeader);
-      BackupLogViewer.WriteLine(ex.Message, StringStyleEnum.errorText);
-    }
-
-
-    #region Backup Operations
-    //      -----------------
 
     /// <summary>
     /// backup directories which get completely copied each time

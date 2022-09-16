@@ -1,11 +1,35 @@
-﻿using System;
+﻿/**************************************************************************************
+
+MyBackup.BackupStats
+====================
+
+Collects some backup operational stas, like when it started, how many files where handled, etc.
+
+Written in 2022 by Jürgpeter Huber, Singapore 
+Contact: https://github.com/PeterHuberSg/MyBackup
+
+To the extent possible under law, the author(s) have dedicated all copyright and 
+related and neighboring rights to this software to the public domain worldwide under
+the Creative Commons 0 license (details see LICENSE.txt file, see also
+<http://creativecommons.org/publicdomain/zero/1.0/>). 
+
+This software is distributed without any warranty. 
+**************************************************************************************/
+
+
+using System;
 
 
 namespace MyBackup {
 
 
   public class BackupStats {
+
+    #region Properties
+    //      ----------
+
     public DateTime StartTime { get; set; }
+
     //stats for all files scanned
     public int TotalFilesCount { get; set; }
     public long TotalBytesCount { get; set; }
@@ -15,12 +39,20 @@ namespace MyBackup {
     public int FilesCount { get; set; }
     public long BytesCount { get; set; }
     public int ErrorsCount { get; set; }
+    #endregion
 
+
+    #region Constructor
+    //      -----------
 
     public BackupStats() {
       StartTime = DateTime.Now;
     }
+    #endregion
 
+
+    #region Methods
+    //      -------
 
     public void Add(BackupStats detailBackupStats) {
       TotalFilesCount += detailBackupStats.TotalFilesCount;
@@ -72,5 +104,6 @@ namespace MyBackup {
       byteCount /= oneKilo;
       return byteCountFloat.ToString("###.###") + " TBytes";
     }
+    #endregion
   }
 }

@@ -1,4 +1,21 @@
-﻿<Window x:Class="MyBackup.MainWindow"
+﻿<!-- **********************************************************************************
+
+MyBackup.MainWindow
+===================
+
+User Interface to control backup operation
+
+Written in 2022 by Jürgpeter Huber, Singapore 
+Contact: https://github.com/PeterHuberSg/MyBackup
+
+To the extent possible under law, the author(s) have dedicated all copyright and 
+related and neighboring rights to this software to the public domain worldwide under
+the Creative Commons 0 license (details see LICENSE.txt file, see also
+<http://creativecommons.org/publicdomain/zero/1.0/>). 
+
+This software is distributed without any warranty. 
+************************************************************************************ -->
+<Window x:Class="MyBackup.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -20,7 +37,8 @@
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="6" />
         <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+     </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="auto"/><!--Titles-->
         <RowDefinition Height="auto"/><!--Labels-->
@@ -38,16 +56,20 @@
         </Style>
       </Grid.Resources>
 
-      <TextBlock Grid.Row="0" Grid.Column="0" FontSize="16"><Run Text="Copy all files into new "/><Run Language="en-sg" Text="backup "/><Run Text="directory"/></TextBlock>
+      <TextBlock Grid.Row="0" Grid.Column="0" FontSize="16" Text="Copy all files into new backup directory"/>
       <TextBlock Grid.Row="0" Grid.Column="2" Text="Update existing backup directory" FontSize="16"/>
+      <Button Grid.Row="0" Grid.Column="3" x:Name="HelpButton" Content="_Help" Margin="6"/>
 
       <TextBlock Grid.Row="1" Grid.Column="0" Text="For each backup run, a new main backup directory gets created within the Backup Path location and all directories listed here get completely copied into the main backup directory:"/>
-      <TextBlock Grid.Row="1" Grid.Column="2"><Run Text="During the first backup run, all directories get copied directly in"/><Run Language="en-sg" Text="t"/><Run Text="o the Backup Path location. Subsequently backups only "/><Run Language="en-sg" Text="copy"/><Run Text=" new and "/><Run Text="update"/><Run Language="en-sg" Text=" "/><Run Text="changed files (different date or size) in those directories:"/></TextBlock>
+      <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2">
+        <Run Text="During the first backup run, all directories get copied directly into the Backup Path location. Subsequently backups only "/>
+        <Run Text="copy new and update changed files (different date or size) in those directories:"/>
+      </TextBlock>
 
       <TextBox Grid.Row="2" Grid.Column="0" Name="SourceDirectoriesCopyTextBox" 
                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" 
                IsReadOnly="False" IsUndoEnabled="True" />
-      <TextBox Grid.Row="2" Grid.Column="2" Name="SourceDirectoriesUpdateTextBox" 
+      <TextBox Grid.Row="2" Grid.Column="2"  Grid.ColumnSpan="2" Name="SourceDirectoriesUpdateTextBox" 
                HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" 
                IsReadOnly="False" IsUndoEnabled="True" />
 
@@ -57,7 +79,7 @@
         <TextBlock DockPanel.Dock="Right" x:Name="DriveStatsTextBlock" FontWeight="Normal" Margin="0,0,10,0"  VerticalAlignment="Center"/>
         <TextBox Name="BackupPathTextBox" BorderThickness="2" Margin="0,0,3,0" VerticalAlignment="Center"/>
       </DockPanel>
-      <DockPanel Grid.Row="3" Grid.Column="2" Margin="0,6,0,0">
+      <DockPanel Grid.Row="3" Grid.Column="2"  Grid.ColumnSpan="2" Margin="0,6,0,0">
         <Button DockPanel.Dock="Left" x:Name="PurgeButton" Content="_Purge" VerticalAlignment="Center" Margin="0,0,10,0"
                 ToolTip="Removes every second 'copy all' directory in Backup Path"/>
         <Label DockPanel.Dock="Left" FontWeight="Bold" VerticalAlignment="Center" Content="Setup data location:"/>
@@ -78,7 +100,5 @@
 
     <Rectangle Grid.Row="2" Fill="NavajoWhite"/>
     <local:LogViewer Grid.Row="2" Grid.Column="0" x:Name="BackupLogViewer" Margin="6"/>
-
-
   </Grid>
 </Window>

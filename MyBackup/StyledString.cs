@@ -1,12 +1,12 @@
 ﻿/**************************************************************************************
 
-LogViewerLib.StyledString
-=========================
+MyBackup.StyledString
+=====================
 
 Defines text formatting supported by LogViewer
 
-Written in 2022 by Jürgpeter Huber 
-Contact: https://github.com/PeterHuberSg/LogViewer
+Written in 2022 by Jürgpeter Huber, Singapore 
+Contact: https://github.com/PeterHuberSg/MyBackup
 
 To the extent possible under law, the author(s) have dedicated all copyright and 
 related and neighboring rights to this software to the public domain worldwide under
@@ -15,6 +15,7 @@ the Creative Commons 0 license (details see LICENSE.txt file, see also
 
 This software is distributed without any warranty. 
 **************************************************************************************/
+
 
 
 using System;

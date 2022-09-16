@@ -1,0 +1,68 @@
+﻿<!-- **********************************************************************************
+
+MyBackup.HelpWindow
+===================
+
+Help window displaying some links to further information.
+
+Written in 2022 by Jürgpeter Huber, Singapore 
+Contact: https://github.com/PeterHuberSg/MyBackup
+
+To the extent possible under law, the author(s) have dedicated all copyright and 
+related and neighboring rights to this software to the public domain worldwide under
+the Creative Commons 0 license (details see LICENSE.txt file, see also
+<http://creativecommons.org/publicdomain/zero/1.0/>). 
+
+This software is distributed without any warranty. 
+************************************************************************************ -->
+<Window x:Class="MyBackup.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyBackup"
+        mc:Ignorable="d"
+        Title="HelpWindow" Width="800" SizeToContent="Height" Background="Gainsboro">
+  <RichTextBox Margin="10" IsDocumentEnabled ="True" IsReadOnly="True">
+    <FlowDocument>
+      <Paragraph>
+        <Run Text="MyBackup Help" FontSize="18" FontWeight="Bold"/>
+      </Paragraph>
+      <Paragraph>
+        <Run Text="How to use MyBackup" FontSize="15" FontWeight="Bold"/>
+      </Paragraph>
+      <Paragraph>
+        <Run Text="For detailed information about MyBackup read the article "/>
+        <Hyperlink x:Name="CodeProjectHyperlink" 
+                   NavigateUri="https://www.codeproject.com/Articles/5342118/Why-SW-developers-should-write-their-own-backup-ap">
+          Why SW developers should write their own backup app and how to do it easily
+        </Hyperlink>
+        <Run Text="It contains also explanations how to use MyBackup."/>
+      </Paragraph>
+
+      <Paragraph>
+        <Run Text="Source code" FontSize="15" FontWeight="Bold"/>
+      </Paragraph>
+      <Paragraph>
+        <Run Text="MyBackup is open source. You can get it from Github:"/>
+        <Hyperlink x:Name="GitHubHyperlink" NavigateUri="https://github.com/PeterHuberSg/MyBackup">
+          Github.com/PeterHuberSg/MyBackup
+        </Hyperlink>
+      </Paragraph>
+
+      <Paragraph>
+        <Run Text="Copy Rights" FontSize="15" FontWeight="Bold"/>
+      </Paragraph>
+      <Paragraph>
+        <Run Text="MyBackup was written by Juerg Peter Huber 2022 in Singapore. The code is committed to the public under the Creatice Common license."/>
+        <Hyperlink x:Name="CreativeCommonHyperlink" 
+                   NavigateUri="https://github.com/PeterHuberSg/MyBackup/blob/main/LICENSE.txt">
+          Creative Commons Zero v1.0 Universal
+        </Hyperlink>
+      </Paragraph>
+      <Paragraph>
+        <Run Text="Version 1.0"/>
+      </Paragraph>
+    </FlowDocument>
+  </RichTextBox>
+</Window>
